@@ -20,7 +20,8 @@ private:
 		UCameraComponent* Camera;
 
 	FVector MoveDirection;
-	FQuat RotationDirection;
+	FQuat RotationDirectionYaw;
+	FQuat RotationDirectionPitch;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		float MoveSpeed = 100.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
@@ -31,7 +32,10 @@ private:
 	APlayerController* PlayerControllerRef;
 
 	void CalculateMoveInput(float Value);
-	void CalculateRoatateInput(float Value);
+	void CalculateYawRotateInput(float Value);
+	void CalculatePitchRotateInput(float Value);
+
+	virtual void Fire() override;
 
 	void Move();
 	void Rotate();

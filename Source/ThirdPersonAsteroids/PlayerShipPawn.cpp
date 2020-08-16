@@ -6,16 +6,31 @@
 #include "Camera/CameraComponent.h"
 #include "Camera/CameraShake.h"
 
+
 void APlayerShipPawn::CalculateMoveInput(float Value)
 {
 	MoveDirection = FVector(Value * MoveSpeed * GetWorld()->DeltaTimeSeconds, 0, 0);
 }
 
-void APlayerShipPawn::CalculateRoatateInput(float Value)
+void APlayerShipPawn::CalculateYawRotateInput(float Value)
 {
 	float RotateAmount = Value * RotateSpeed * GetWorld()->DeltaTimeSeconds;
 	FRotator Rotation = FRotator(0, RotateAmount, 0);
-	RotationDirection = FQuat(Rotation);
+	RotationDirectionYaw = FQuat(Rotation);
+}
+
+void APlayerShipPawn::CalculatePitchRotateInput(float Value)
+{
+	float RotateAmount = Value * RotateSpeed * GetWorld()->DeltaTimeSeconds;
+	FRotator Rotation = FRotator(RotateAmount, 0, 0);
+	RotationDirectionPitch = FQuat(Rotation);
+}
+
+
+
+void APlayerShipPawn::Fire()
+{
+	Super::Fire();
 }
 
 void APlayerShipPawn::Move()
@@ -25,7 +40,8 @@ void APlayerShipPawn::Move()
 
 void APlayerShipPawn::Rotate()
 {
-	AddActorLocalRotation(RotationDirection, true);
+	AddActorLocalRotation(RotationDirectionYaw, true);
+	AddActorLocalRotation(RotationDirectionPitch, true);
 }
 
 // Sets default values
@@ -45,8 +61,6 @@ APlayerShipPawn::APlayerShipPawn()
 void APlayerShipPawn::BeginPlay()
 {
 	Super::BeginPlay();
-
-
 	PlayerControllerRef = Cast<APlayerController>(GetController());
 	
 }
@@ -55,6 +69,13 @@ void APlayerShipPawn::BeginPlay()
 void APlayerShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	//movement
+
+	//rotation
+	PlayerInputComponent->BindAxis("Pitch", this, &APlayerShipPawn::CalculatePitchRotateInput);
+	PlayerInputComponent->BindAxis("Yaw", this, &APlayerShipPawn::CalculateYawRotateInput);
+	//action
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APlayerShipPawn::Fire);
 
 }
 
@@ -62,6 +83,9 @@ void APlayerShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void APlayerShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	Rotate();
+	Move();
+	
 }
 
 void APlayerShipPawn::HandleDestruction()
