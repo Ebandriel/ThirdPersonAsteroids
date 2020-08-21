@@ -9,6 +9,23 @@
 
 void APlayerShipPawn::CalculateMoveInput(float Value)
 {
+	float Thrust = Value;
+	FRotator ObjectRotation = GetActorRotation();
+	//add new vector to old vector
+	FVector OldMoveDirection = MoveDirection;
+	FVector NewMoveInput = ObjectRotation.Vector();
+	//add vectors together to get new vectors
+	FVector NewMoveDirection = NewMoveInput + OldMoveDirection;
+	// thrust is ratiod to top speed and specific impulse
+	float VectorThrust;
+	float MaxSpeed = 1000.0f;
+	float XThrust;
+	float YThrust;
+	float ZThrust;
+
+
+	//calcullate slowdown on all vectors
+	//final product in ne movement vector
 	MoveDirection = FVector(Value * MoveSpeed * GetWorld()->DeltaTimeSeconds, 0, 0);
 }
 
@@ -70,7 +87,7 @@ void APlayerShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	//movement
-
+	PlayerInputComponent->BindAxis("Thrust", this, &APlayerShipPawn::CalculateMoveInput);
 	//rotation
 	PlayerInputComponent->BindAxis("Pitch", this, &APlayerShipPawn::CalculatePitchRotateInput);
 	PlayerInputComponent->BindAxis("Yaw", this, &APlayerShipPawn::CalculateYawRotateInput);
