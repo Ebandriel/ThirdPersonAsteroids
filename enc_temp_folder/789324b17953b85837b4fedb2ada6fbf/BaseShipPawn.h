@@ -35,24 +35,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Effects")
 		TSubclassOf<UCameraShake> DeathShake;
 
-	//movement components
-	FTimerHandle SlowDownTimerHandle;
-	FVector MoveDirection;
-	FQuat RotationDirectionYaw;
-	FQuat RotationDirectionPitch;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-		float MoveSpeed = 100.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-		float RotateSpeed = 100.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-		float SlowDownRate = 30.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-		float SlowDownTime = 2.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-		float MaxSpeed = 1000.0f;
-
-
-
 public:
 	// Sets default values for this pawn's properties
 	ABaseShipPawn();
@@ -60,21 +42,9 @@ public:
 	virtual void HandleDestruction();
 
 protected:
-
-	float CalculateAcceleration(float Value);
-	FVector CreateMoveVector(float Value, FVector Speeds);
-	void MomentumDisipation();
-	float Disipate(float Value);
-	void Move();
-	void Rotate();
-
-	FVector CurrentLocation = FVector(0.0f);
-	FVector OldLocation = FVector(0.0f);
-
-
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	virtual void Fire();
 
 public:	
 	// Called every frame
@@ -83,8 +53,4 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void CalculateMoveInput(float Value);
-	void CalculateYawRotateInput(float Value);
-	void CalculatePitchRotateInput(float Value);
-	virtual void Fire();
 };
