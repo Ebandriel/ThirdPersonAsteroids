@@ -9,24 +9,46 @@
 
 void APlayerShipPawn::CalculateMoveInput(float Value)
 {
-	float Thrust = Value;
-	FRotator ObjectRotation = GetActorRotation();
-	//add new vector to old vector
+	UE_LOG(LogTemp, Warning, TEXT("Thrust %f"), Value);
+	float SlowDown = 0.0f;
+	float MaxSpeed = 100.0f;
+	//old ship velocity x/y/z
+	CurrentLocation = GetActorLocation();
+	FVector Speeds = CurrentLocation-OldLocation;
 	FVector OldMoveDirection = MoveDirection;
+	//get new direction
+	FRotator ObjectRotation = GetActorRotation();
 	FVector NewMoveInput = ObjectRotation.Vector();
-	//add vectors together to get new vectors
+	//split to x/y/z
+	
+	float XThrust = NewMoveInput.X * (Value * MoveSpeed * ((MaxSpeed - Speeds.X) / MaxSpeed)) * GetWorld()->DeltaTimeSeconds;
+	float YThrust = NewMoveInput.Y * (Value * MoveSpeed * ((MaxSpeed - Speeds.Y) / MaxSpeed)) * GetWorld()->DeltaTimeSeconds;
+	float ZThrust = NewMoveInput.Z * (Value * MoveSpeed * ((MaxSpeed - Speeds.Z) / MaxSpeed)) * GetWorld()->DeltaTimeSeconds;
+
+	UE_LOG(LogTemp, Warning, TEXT("Input Y %f"), NewMoveInput.X);
+	UE_LOG(LogTemp, Warning, TEXT("Input Y %f"), NewMoveInput.Y);
+	UE_LOG(LogTemp, Warning, TEXT("Input Y %f"), NewMoveInput.Z);
+	UE_LOG(LogTemp, Warning,TEXT("X %f"), XThrust);
+	UE_LOG(LogTemp, Warning,TEXT("Y %f"), YThrust);
+	UE_LOG(LogTemp, Warning,TEXT("Z %f"), ZThrust);
+	UE_LOG(LogTemp, Warning, TEXT("speed X %f"), Speeds.X);
+	UE_LOG(LogTemp, Warning, TEXT("speed Y %f"), Speeds.Y);
+	UE_LOG(LogTemp, Warning, TEXT("speed Z %f"), Speeds.Z);
+	NewMoveInput.X = XThrust;
+	NewMoveInput.Y = YThrust;
+	NewMoveInput.Z = ZThrust;
+	OldLocation = CurrentLocation;
+	//get thrust
+	//float Thrust = (Value * MoveSpeed *((MaxSpeed - CurrentSpeed) / MaxSpeed)) + CurrentSpeed - SlowDown;
+	//apply speed to individual vector current speed/max speed/specific impulse
+	//apply new velocities to old velocities
+	//apply slowdown to each vector
+	//new ship velocity x/y/z becomes move direction
+	//MoveDirection = FVector(Value * MoveSpeed * GetWorld()->DeltaTimeSeconds, 0, 0);
 	FVector NewMoveDirection = NewMoveInput + OldMoveDirection;
-	// thrust is ratiod to top speed and specific impulse
-	float VectorThrust;
-	float MaxSpeed = 1000.0f;
-	float XThrust;
-	float YThrust;
-	float ZThrust;
-
-
-	//calcullate slowdown on all vectors
+	//calculate slowdown on all vectors
 	//final product in ne movement vector
-	MoveDirection = FVector(Value * MoveSpeed * GetWorld()->DeltaTimeSeconds, 0, 0);
+	MoveDirection = FVector(NewMoveDirection);
 }
 
 void APlayerShipPawn::CalculateYawRotateInput(float Value)
@@ -71,6 +93,8 @@ APlayerShipPawn::APlayerShipPawn()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+
+	OldLocation = GetActorLocation();
 
 }
 

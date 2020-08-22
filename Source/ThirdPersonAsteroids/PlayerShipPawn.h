@@ -39,6 +39,11 @@ private:
 
 	void Move();
 	void Rotate();
+	//speed stuff
+	FVector CurrentLocation;
+	FVector OldLocation;
+
+
 public:
 	// Sets default values for this pawn's properties
 	APlayerShipPawn();
