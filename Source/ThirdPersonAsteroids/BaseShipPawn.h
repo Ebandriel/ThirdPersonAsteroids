@@ -67,7 +67,7 @@ protected:
 	float Disipate(float Value);
 	void Move();
 	void Rotate();
-
+	virtual void Fire();
 	FVector CurrentLocation = FVector(0.0f);
 	FVector OldLocation = FVector(0.0f);
 
@@ -86,5 +86,5 @@ public:
 	void CalculateMoveInput(float Value);
 	void CalculateYawRotateInput(float Value);
 	void CalculatePitchRotateInput(float Value);
-	virtual void Fire();
+	
 };
