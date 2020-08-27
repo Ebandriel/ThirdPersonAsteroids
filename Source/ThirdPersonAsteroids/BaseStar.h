@@ -5,12 +5,21 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "BaseStar.generated.h"
-
+class UCapsuleComponent;
+class UDirectionalLightComponent;
 UCLASS()
 class THIRDPERSONASTEROIDS_API ABaseStar : public AActor
 {
 	GENERATED_BODY()
-	
+private:
+	//components
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UCapsuleComponent* CapsuleComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* BaseMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UDirectionalLightComponent* SunLight;
+ 
 public:	
 	// Sets default values for this actor's properties
 	ABaseStar();
